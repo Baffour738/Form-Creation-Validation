@@ -1,57 +1,44 @@
-<form id="myForm">
-  <label for="email">Email:</label>
-  <input type="email" id="email" required>
-  <br><br>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("registration-form");
+  const feedbackDiv = document.getElementById("form-feedback");
 
-  <label for="age">Age:</label>
-  <input type="number" id="age" min="18" max="99">
-  <br><br>
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-  <label for="message">Message:</label><br>
-  <textarea id="message" rows="6" cols="40"></textarea>
-  <br><br>
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  <button type="submit">Submit</button>
-</form>
+    let isValid = true;
+    let messages = [];
 
-<div id="errorMessages" style="color:red;"></div>
+    // Username validation
+    if (username.length < 3) {
+      isValid = false;
+      messages.push("Username must be at least 3 characters long.");
+    }
 
-<script>
-document.getElementById("myForm").addEventListener("submit", function(event) {
-  event.preventDefault(); 
-  let errors = [];
+    // Email validation (as per instructions: check for '@' and '.')
+    if (!email.includes("@") || !email.includes(".")) {
+      isValid = false;
+      messages.push("Please enter a valid email address.");
+    }
 
-  // Email validation (regex)
-  const email = document.getElementById("email").value.trim();
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
-    errors.push("Please enter a valid email address.");
-  }
+    // Password validation
+    if (password.length < 8) {
+      isValid = false;
+      messages.push("Password must be at least 8 characters long.");
+    }
 
-  // Age validation
-  const age = Number(document.getElementById("age").value);
-  if (age && (age < 18 || age > 99)) {
-    errors.push("Age must be between 18 and 99.");
-  }
+    // Show feedback area
+    feedbackDiv.style.display = "block";
 
-  // Message validations
-  const message = document.getElementById("message").value.trim();
-  const wordCount = message.split(/\s+/).filter(word => word.length > 0).length;
-  if (wordCount > 100) {
-    errors.push("Message must not exceed 100 words.");
-  }
-  if (message.length > 5000) {
-    errors.push("Message must not exceed 5000 characters.");
-  }
-
-  // Display errors or submit
-  const errorDiv = document.getElementById("errorMessages");
-  if (errors.length > 0) {
-    errorDiv.innerHTML = errors.join("<br>");
-  } else {
-    errorDiv.innerHTML = "";
-    alert("Form submitted successfully!");
-    this.submit();
-  }
+    if (isValid) {
+      feedbackDiv.textContent = "Registration successful!";
+      feedbackDiv.style.color = "#28a745";
+    } else {
+      feedbackDiv.innerHTML = messages.join("<br>");
+      feedbackDiv.style.color = "#dc3545";
+    }
+  });
 });
-</script>
